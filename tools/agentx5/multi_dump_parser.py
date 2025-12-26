@@ -132,18 +132,28 @@ def compute_capital_gains(robinhood_csv: Path) -> pd.DataFrame:
     
     # Check if required columns exist
     required_columns = ["RECEIVED DATE", "DATE SOLD", "PROCEEDS", "COST BASIS(USD)"]
-    if not all(col in df.columns for col in required_columns):
-        print("Warning: Robinhood CSV missing required columns for capital gains calculation")
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        print(f"Warning: Robinhood CSV missing required columns: {', '.join(missing_columns)}")
         return df
     
     # Parse dates
     df["RECEIVED DATE"] = pd.to_datetime(df["RECEIVED DATE"], errors='coerce')
     df["DATE SOLD"] = pd.to_datetime(df["DATE SOLD"], errors='coerce')
     
-    # Calculate gains and holding period
-    df["gain"] = pd.to_numeric(df["PROCEEDS"], errors='coerce') - pd.to_numeric(df["COST BASIS(USD)"], errors='coerce')
+    # Calculate gains and holding period with error handling
+    proceeds = pd.to_numeric(df["PROCEEDS"], errors='coerce')
+    cost_basis = pd.to_numeric(df["COST BASIS(USD)"], errors='coerce')
+    df["gain"] = proceeds - cost_basis
     df["days_held"] = (df["DATE SOLD"] - df["RECEIVED DATE"]).dt.days
     df["long_term"] = df["days_held"] > 365
+    
+    # Filter out rows with invalid data
+    valid_mask = ~(df["gain"].isna() | df["days_held"].isna())
+    if not valid_mask.all():
+        print(f"Warning: {(~valid_mask).sum()} row(s) with invalid data were excluded from capital gains calculation")
+        df = df[valid_mask]
+    
     return df
 
 
