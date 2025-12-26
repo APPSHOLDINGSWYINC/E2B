@@ -25,7 +25,7 @@ A powerful data parsing tool that automatically splits multi-format dump files i
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.10+
 - pandas
 
 ## Installation

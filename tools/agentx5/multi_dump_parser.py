@@ -104,6 +104,9 @@ def write_sections(sections: Dict[str, List[str]], out_dir: Path) -> None:
             continue
 
         # CSV-style sections ---------------------------------------
+        if not lines:
+            continue
+
         header = lines[0]
         rows = lines[1:]
 
@@ -111,7 +114,13 @@ def write_sections(sections: Dict[str, List[str]], out_dir: Path) -> None:
         dialect = csv.Sniffer().sniff(header)
         data = list(csv.reader([header] + rows, dialect=dialect))
 
-        df = pd.DataFrame(data[1:], columns=data[0])
+        # Handle sections with only headers and no data rows
+        if len(data) > 1:
+            df = pd.DataFrame(data[1:], columns=data[0])
+        else:
+            # Create empty DataFrame with just the header columns
+            df = pd.DataFrame(columns=data[0])
+
         df.to_csv(target.with_suffix(".csv"), index=False)
 
 
@@ -119,8 +128,20 @@ def write_sections(sections: Dict[str, List[str]], out_dir: Path) -> None:
 # 4.  Example post-processing: capital-gains on Robinhood
 # -----------------------------------------------------------------
 def compute_capital_gains(robinhood_csv: Path) -> pd.DataFrame:
-    df = pd.read_csv(robinhood_csv, parse_dates=["RECEIVED DATE", "DATE SOLD"])
-    df["gain"] = df["PROCEEDS"] - df["COST BASIS(USD)"]
+    df = pd.read_csv(robinhood_csv)
+    
+    # Check if required columns exist
+    required_columns = ["RECEIVED DATE", "DATE SOLD", "PROCEEDS", "COST BASIS(USD)"]
+    if not all(col in df.columns for col in required_columns):
+        print("Warning: Robinhood CSV missing required columns for capital gains calculation")
+        return df
+    
+    # Parse dates
+    df["RECEIVED DATE"] = pd.to_datetime(df["RECEIVED DATE"], errors='coerce')
+    df["DATE SOLD"] = pd.to_datetime(df["DATE SOLD"], errors='coerce')
+    
+    # Calculate gains and holding period
+    df["gain"] = pd.to_numeric(df["PROCEEDS"], errors='coerce') - pd.to_numeric(df["COST BASIS(USD)"], errors='coerce')
     df["days_held"] = (df["DATE SOLD"] - df["RECEIVED DATE"]).dt.days
     df["long_term"] = df["days_held"] > 365
     return df
