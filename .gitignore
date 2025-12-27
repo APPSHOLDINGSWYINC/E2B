@@ -295,3 +295,11 @@ sdkRefRoutes.json
 
 # SDK Client generated spec
 spec/openapi_generated.yml
+
+# Build and validation reports
+build_report.txt
+validation_report.txt
+
+# AgentX5 test outputs
+tools/agentx5/test_output/
+tools/agentx5/.pytest_cache/
