@@ -230,8 +230,8 @@ class TestComputeCapitalGains:
         assert "long_term" in result.columns
         assert result.loc[0, "gain"] == 50.0
         assert result.loc[1, "gain"] == 50.0
-        assert result.loc[0, "long_term"] == True  # held > 365 days
-        assert result.loc[1, "long_term"] == False  # held < 365 days
+        assert result.loc[0, "long_term"]  # held > 365 days (truthy check)
+        assert not result.loc[1, "long_term"]  # held < 365 days (falsy check)
 
     def test_compute_gains_handles_missing_columns(self, temp_dir):
         # Create CSV with missing required columns
