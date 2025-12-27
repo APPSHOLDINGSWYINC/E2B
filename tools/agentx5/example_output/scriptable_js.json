@@ -1,0 +1,4 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+let widget = new ListWidget()
+widget.addText("Hello World")
