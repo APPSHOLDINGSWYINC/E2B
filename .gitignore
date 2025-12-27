@@ -299,6 +299,7 @@ spec/openapi_generated.yml
 # Build and validation reports
 build_report.txt
 validation_report.txt
+integration_test_report.txt
 
 # AgentX5 test outputs
 tools/agentx5/test_output/

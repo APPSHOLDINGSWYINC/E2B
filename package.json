@@ -13,7 +13,14 @@
     "generate-sdk-reference": "pnpm --if-present --recursive run generate-sdk-reference",
     "lint": "pnpm --if-present --recursive run lint",
     "format": "pnpm --if-present --recursive run format",
-    "changeset": "pnpx @changesets/cli"
+    "changeset": "pnpx @changesets/cli",
+    "build": "./scripts/build.sh",
+    "build:all": "./scripts/build.sh --target all",
+    "build:js-sdk": "./scripts/build.sh --target js-sdk",
+    "build:cli": "./scripts/build.sh --target cli",
+    "build:python-sdk": "./scripts/build.sh --target python-sdk",
+    "build:agentx5": "./scripts/build.sh --target agentx5",
+    "validate": "./scripts/validate.sh"
   },
   "packageManager": "pnpm@9.15.5",
   "dependencies": {

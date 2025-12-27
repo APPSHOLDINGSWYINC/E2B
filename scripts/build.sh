@@ -39,19 +39,24 @@ check_dependencies() {
     
     local missing_deps=()
     
-    # Check Node.js
-    if ! command -v node &> /dev/null; then
-        missing_deps+=("node")
+    # Check dependencies based on build target
+    if [ "$BUILD_TARGET" == "js-sdk" ] || [ "$BUILD_TARGET" == "cli" ] || [ "$BUILD_TARGET" == "all" ]; then
+        # Check Node.js
+        if ! command -v node &> /dev/null; then
+            missing_deps+=("node")
+        fi
+        
+        # Check pnpm
+        if ! command -v pnpm &> /dev/null; then
+            missing_deps+=("pnpm")
+        fi
     fi
     
-    # Check pnpm
-    if ! command -v pnpm &> /dev/null; then
-        missing_deps+=("pnpm")
-    fi
-    
-    # Check Python
-    if ! command -v python3 &> /dev/null; then
-        missing_deps+=("python3")
+    if [ "$BUILD_TARGET" == "python-sdk" ] || [ "$BUILD_TARGET" == "agentx5" ] || [ "$BUILD_TARGET" == "all" ]; then
+        # Check Python
+        if ! command -v python3 &> /dev/null; then
+            missing_deps+=("python3")
+        fi
     fi
     
     if [ ${#missing_deps[@]} -ne 0 ]; then
@@ -60,7 +65,7 @@ check_dependencies() {
         exit 1
     fi
     
-    log_success "All dependencies are installed"
+    log_success "All required dependencies are installed"
 }
 
 install_dependencies() {
@@ -68,14 +73,18 @@ install_dependencies() {
     
     cd "$PROJECT_ROOT"
     
-    # Install JavaScript dependencies
-    log_info "Installing JavaScript dependencies..."
-    pnpm install --frozen-lockfile
+    # Install JavaScript dependencies if needed
+    if [ "$BUILD_TARGET" == "js-sdk" ] || [ "$BUILD_TARGET" == "cli" ] || [ "$BUILD_TARGET" == "all" ]; then
+        log_info "Installing JavaScript dependencies..."
+        pnpm install --frozen-lockfile
+    fi
     
-    # Install Python dependencies for agentx5
-    log_info "Installing Python dependencies for agentx5..."
-    cd "$PROJECT_ROOT/tools/agentx5"
-    pip install -q -r requirements.txt
+    # Install Python dependencies for agentx5 if needed
+    if [ "$BUILD_TARGET" == "agentx5" ] || [ "$BUILD_TARGET" == "all" ]; then
+        log_info "Installing Python dependencies for agentx5..."
+        cd "$PROJECT_ROOT/tools/agentx5"
+        pip install -q -r requirements.txt
+    fi
     
     cd "$PROJECT_ROOT"
     log_success "Dependencies installed successfully"
@@ -128,15 +137,19 @@ run_tests() {
     log_info "Running tests..."
     
     if [ "$BUILD_TARGET" == "js-sdk" ] || [ "$BUILD_TARGET" == "all" ]; then
-        log_info "Running JavaScript SDK tests..."
-        cd "$PROJECT_ROOT/packages/js-sdk"
-        pnpm test || log_warning "Some JS SDK tests failed"
+        if command -v pnpm &> /dev/null; then
+            log_info "Running JavaScript SDK tests..."
+            cd "$PROJECT_ROOT/packages/js-sdk"
+            pnpm test || log_warning "Some JS SDK tests failed"
+        fi
     fi
     
     if [ "$BUILD_TARGET" == "cli" ] || [ "$BUILD_TARGET" == "all" ]; then
-        log_info "Running CLI tests..."
-        cd "$PROJECT_ROOT/packages/cli"
-        pnpm test || log_warning "Some CLI tests failed"
+        if command -v pnpm &> /dev/null; then
+            log_info "Running CLI tests..."
+            cd "$PROJECT_ROOT/packages/cli"
+            pnpm test || log_warning "Some CLI tests failed"
+        fi
     fi
     
     if [ "$BUILD_TARGET" == "agentx5" ] || [ "$BUILD_TARGET" == "all" ]; then
@@ -157,7 +170,11 @@ run_linters() {
     log_info "Running linters..."
     
     cd "$PROJECT_ROOT"
-    pnpm lint || log_warning "Linting found some issues"
+    if [ "$BUILD_TARGET" == "js-sdk" ] || [ "$BUILD_TARGET" == "cli" ] || [ "$BUILD_TARGET" == "all" ]; then
+        if command -v pnpm &> /dev/null; then
+            pnpm lint || log_warning "Linting found some issues"
+        fi
+    fi
     
     log_success "Linting completed"
 }

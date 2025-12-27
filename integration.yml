@@ -1,0 +1,138 @@
+# E2B Integration Configuration
+# This file defines integration points between components
+
+version: "1.0"
+
+components:
+  - name: js-sdk
+    path: packages/js-sdk
+    type: javascript
+    build: pnpm build
+    test: pnpm test
+    lint: pnpm lint
+    dependencies:
+      - name: node
+        version: "20.19.5"
+      - name: pnpm
+        version: "9.15.5"
+
+  - name: cli
+    path: packages/cli
+    type: javascript
+    build: pnpm build
+    test: pnpm test
+    lint: pnpm lint
+    dependencies:
+      - name: node
+        version: "20.19.5"
+      - name: pnpm
+        version: "9.15.5"
+
+  - name: python-sdk
+    path: packages/python-sdk
+    type: python
+    build: poetry build
+    test: poetry run pytest
+    dependencies:
+      - name: python
+        version: "3.9"
+      - name: poetry
+        version: "2.1.1"
+
+  - name: agentx5
+    path: tools/agentx5
+    type: python
+    build: python -m py_compile multi_dump_parser.py
+    test: pytest -v
+    dependencies:
+      - name: python
+        version: "3.9"
+      - name: pandas
+        version: ">=2.0.0"
+
+environments:
+  production:
+    description: "Production environment with optimized builds"
+    variables:
+      ENVIRONMENT: production
+      BUILD_TARGET: all
+      BUILD_OPTIMIZATION: true
+      ERROR_VERBOSE: false
+      LOG_LEVEL: info
+
+  sandbox:
+    description: "Sandbox environment mirroring production"
+    variables:
+      ENVIRONMENT: sandbox
+      BUILD_TARGET: all
+      SANDBOX_ENABLED: true
+      SANDBOX_MIRROR_PRODUCTION: true
+      ERROR_VERBOSE: true
+      LOG_LEVEL: debug
+
+  development:
+    description: "Development environment with debugging enabled"
+    variables:
+      ENVIRONMENT: development
+      BUILD_TARGET: all
+      ERROR_VERBOSE: true
+      ERROR_STACK_TRACES: true
+      LOG_LEVEL: debug
+
+pipelines:
+  build:
+    description: "Build all components"
+    steps:
+      - name: install-dependencies
+        command: pnpm install --frozen-lockfile
+      - name: build-js-sdk
+        command: cd packages/js-sdk && pnpm build
+      - name: build-cli
+        command: cd packages/cli && pnpm build
+      - name: validate-agentx5
+        command: cd tools/agentx5 && python -m py_compile multi_dump_parser.py
+
+  test:
+    description: "Run all tests"
+    steps:
+      - name: test-js-sdk
+        command: cd packages/js-sdk && pnpm test
+      - name: test-cli
+        command: cd packages/cli && pnpm test
+      - name: test-agentx5
+        command: cd tools/agentx5 && pytest -v
+
+  validate:
+    description: "Validate deployment readiness"
+    steps:
+      - name: run-validation
+        command: ./scripts/validate.sh
+
+  deploy:
+    description: "Deploy to target environment"
+    steps:
+      - name: build
+        pipeline: build
+      - name: test
+        pipeline: test
+      - name: validate
+        pipeline: validate
+      - name: deploy-artifacts
+        command: echo "Deployment ready"
+
+quality_gates:
+  - name: test-coverage
+    threshold: 80
+    description: "Minimum test coverage required"
+
+  - name: build-success
+    required: true
+    description: "All builds must succeed"
+
+  - name: lint-pass
+    required: true
+    description: "Code must pass linting"
+
+  - name: security-scan
+    required: true
+    description: "Security vulnerabilities must be addressed"
