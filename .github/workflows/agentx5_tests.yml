@@ -1,0 +1,106 @@
+name: Test AgentX5 Tool
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    defaults:
+      run:
+        working-directory: ./tools/agentx5
+        shell: bash
+    name: AgentX5 - Build and test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse .tool-versions
+        uses: wistia/parse-tool-versions@v2.1.1
+        with:
+          filename: '.tool-versions'
+          uppercase: 'true'
+          prefix: 'tool_version_'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '${{ env.TOOL_VERSION_PYTHON }}'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('tools/agentx5/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas pytest pytest-cov
+
+      - name: Validate Python syntax
+        run: python -m py_compile multi_dump_parser.py
+
+      - name: Run tests
+        run: pytest -v --cov=multi_dump_parser --cov-report=term-missing
+        if: always()
+
+      - name: Test with example dump
+        run: |
+          python multi_dump_parser.py example_dump.txt test_output
+          ls -la test_output/
+        if: always()
+
+  lint:
+    defaults:
+      run:
+        working-directory: ./tools/agentx5
+        shell: bash
+    name: AgentX5 - Lint and format check
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse .tool-versions
+        uses: wistia/parse-tool-versions@v2.1.1
+        with:
+          filename: '.tool-versions'
+          uppercase: 'true'
+          prefix: 'tool_version_'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '${{ env.TOOL_VERSION_PYTHON }}'
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install black flake8 mypy
+
+      - name: Check code formatting with black
+        run: black --check --diff multi_dump_parser.py
+
+      - name: Lint with flake8
+        run: flake8 multi_dump_parser.py --max-line-length=100 --extend-ignore=E203,W503
+        if: always()
+
+      - name: Type check with mypy
+        run: mypy multi_dump_parser.py --ignore-missing-imports
+        if: always()
