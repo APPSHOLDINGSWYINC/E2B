@@ -1,0 +1,316 @@
+# GitLab CI/CD Configuration for E2B
+# This configuration provides continuous deployment for the E2B project
+
+# Define the stages of the pipeline
+stages:
+  - setup
+  - lint
+  - test
+  - build
+  - deploy
+
+# Default configuration for all jobs
+default:
+  # Retry failed jobs up to 2 times
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+  # Use cache for faster builds
+  cache:
+    key:
+      files:
+        - pnpm-lock.yaml
+    paths:
+      - .pnpm-store
+      - node_modules/
+      - .cache/
+
+# Variables that can be used across all jobs
+variables:
+  # Continuous deployment mode
+  # Set to "true" to enable continuous deployment to production
+  CONTINUOUS_DEPLOYMENT: "false"
+
+  # Incremental rollout mode
+  # Set to "timed" for timed incremental rollout
+  # (5-minute delay between rollouts)
+  INCREMENTAL_ROLLOUT_MODE: "manual"
+
+  # Node.js and pnpm configuration
+  PNPM_HOME: ".pnpm-store"
+  NPM_CONFIG_CACHE: ".cache/.npm"
+  CYPRESS_CACHE_FOLDER: ".cache/cypress"
+
+# Template for Node.js setup
+.node_setup: &node_setup
+  image: node:20
+  before_script:
+    # Parse tool versions from .tool-versions file
+    - |
+      if [ -f .tool-versions ]; then
+        export NODE_VERSION=$(grep nodejs .tool-versions | awk '{print $2}')
+        export PNPM_VERSION=$(grep pnpm .tool-versions | awk '{print $2}')
+        export PYTHON_VERSION=$(grep python .tool-versions | awk '{print $2}')
+        export POETRY_VERSION=$(grep poetry .tool-versions | awk '{print $2}')
+      fi
+    # Install pnpm
+    - npm install -g pnpm@${PNPM_VERSION:-9.15.5}
+    - pnpm config set store-dir $PNPM_HOME
+    - pnpm config set auto-install-peers true
+    - pnpm config set exclude-links-from-lockfile true
+    # Install dependencies
+    - pnpm install --frozen-lockfile
+
+# Setup job - validates environment and installs dependencies
+setup:
+  <<: *node_setup
+  stage: setup
+  script:
+    - echo "Setup complete"
+    - node --version
+    - pnpm --version
+  artifacts:
+    paths:
+      - node_modules/
+      - .pnpm-store/
+    expire_in: 1 hour
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# Lint job - runs linting across all packages
+lint:
+  <<: *node_setup
+  stage: lint
+  needs: []
+  script:
+    - pnpm run lint
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+  allow_failure: false
+
+# JavaScript SDK Tests
+test:js-sdk:
+  <<: *node_setup
+  stage: test
+  needs:
+    - setup
+  script:
+    - cd packages/js-sdk
+    - pnpm test
+  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+  artifacts:
+    reports:
+      junit: packages/js-sdk/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: packages/js-sdk/coverage/cobertura-coverage.xml
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# Python SDK Tests
+test:python-sdk:
+  image: python:3.11
+  stage: test
+  needs:
+    - setup
+  before_script:
+    - |
+      if [ -f .tool-versions ]; then
+        export POETRY_VERSION=$(grep poetry .tool-versions | awk '{print $2}')
+      fi
+    - pip install poetry==${POETRY_VERSION:-1.7.1}
+    - cd packages/python-sdk
+    - poetry install
+  script:
+    - poetry run pytest
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      junit: packages/python-sdk/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: packages/python-sdk/coverage.xml
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# CLI Tests
+test:cli:
+  <<: *node_setup
+  stage: test
+  needs:
+    - setup
+  script:
+    - cd packages/cli
+    - pnpm test
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# Build Web Application
+build:web:
+  <<: *node_setup
+  stage: build
+  needs:
+    - lint
+    - test:js-sdk
+    - test:python-sdk
+    - test:cli
+  script:
+    - pnpm run build:web
+  artifacts:
+    paths:
+      - apps/web/.next/
+      - apps/web/out/
+    expire_in: 1 week
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# Build packages
+build:packages:
+  <<: *node_setup
+  stage: build
+  needs:
+    - lint
+    - test:js-sdk
+    - test:python-sdk
+    - test:cli
+  script:
+    - pnpm run build --recursive --if-present
+  artifacts:
+    paths:
+      - packages/*/dist/
+      - packages/*/build/
+    expire_in: 1 week
+  only:
+    - branches
+    - merge_requests
+    - main
+    - develop
+
+# Deploy to staging environment
+deploy:staging:
+  <<: *node_setup
+  stage: deploy
+  needs:
+    - build:web
+    - build:packages
+  script:
+    - echo "Deploying to staging environment"
+    # Add your staging deployment commands here
+    # Example: pnpm run deploy:staging
+    # Or use platform-specific deployment commands
+  environment:
+    name: staging
+    url: https://staging.e2b.dev
+  only:
+    - develop
+  when: manual
+
+# Deploy to production with manual approval
+deploy:production:manual:
+  <<: *node_setup
+  stage: deploy
+  needs:
+    - build:web
+    - build:packages
+  script:
+    - echo "Deploying to production environment"
+    # Add your production deployment commands here
+    # Example: pnpm run deploy:production
+  environment:
+    name: production
+    url: https://e2b.dev
+  only:
+    - main
+  when: manual
+  rules:
+    - if: '$CONTINUOUS_DEPLOYMENT != "true"'
+      when: manual
+
+# Continuous deployment to production (automatic)
+deploy:production:continuous:
+  <<: *node_setup
+  stage: deploy
+  needs:
+    - build:web
+    - build:packages
+  script:
+    - echo "Automatically deploying to production environment"
+    # Add your production deployment commands here
+    # Example: pnpm run deploy:production
+  environment:
+    name: production
+    url: https://e2b.dev
+    auto_stop_in: never
+  only:
+    - main
+  rules:
+    - if: '$CONTINUOUS_DEPLOYMENT == "true"'
+      when: on_success
+
+# Continuous deployment with timed incremental rollout
+deploy:production:timed-rollout:
+  <<: *node_setup
+  stage: deploy
+  needs:
+    - build:web
+    - build:packages
+  script:
+    - echo "Deploying to production with timed incremental rollout"
+    - echo "Waiting 5 minutes between rollouts..."
+    - sleep 300  # 5 minute delay
+    # Add your production deployment commands here
+    # Example: pnpm run deploy:production --incremental
+  environment:
+    name: production
+    url: https://e2b.dev
+    auto_stop_in: never
+  only:
+    - main
+  rules:
+    - if: >
+        $CONTINUOUS_DEPLOYMENT == "true" &&
+        $INCREMENTAL_ROLLOUT_MODE == "timed"
+      when: on_success
+
+# Publish packages (for releases)
+publish:packages:
+  <<: *node_setup
+  stage: deploy
+  needs:
+    - build:packages
+  before_script:
+    - npm install -g pnpm@${PNPM_VERSION:-9.15.5}
+    - pnpm config set store-dir $PNPM_HOME
+    - pnpm config set auto-install-peers true
+    - pnpm config set exclude-links-from-lockfile true
+    - pnpm install --frozen-lockfile
+  script:
+    - echo "Publishing packages"
+    - pnpm run version
+    - pnpm run publish
+  only:
+    - tags
+    - /^v\d+\.\d+\.\d+$/
+  when: manual
+  environment:
+    name: npm-registry

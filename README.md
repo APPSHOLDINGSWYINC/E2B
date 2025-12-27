@@ -76,6 +76,22 @@ Visit [E2B documentation](https://e2b.dev/docs).
 ### 5. E2B cookbook
 Visit our [Cookbook](https://github.com/e2b-dev/e2b-cookbook/tree/main) to get inspired by examples with different LLMs and AI frameworks.
 
+## CI/CD and Deployment
+
+### GitLab CI/CD
+
+The E2B project includes comprehensive GitLab CI/CD configuration for continuous deployment. See the [GitLab CI/CD Setup Guide](GITLAB_CI_SETUP.md) for detailed instructions on:
+
+- Setting up Auto DevOps
+- Configuring manual CI/CD pipelines
+- Implementing deployment strategies (manual, continuous, timed incremental rollout)
+- Managing environment variables and secrets
+- Admin-level configuration for self-managed GitLab instances
+
+### GitHub Actions
+
+The project also includes GitHub Actions workflows for testing and publishing. These are located in the `.github/workflows` directory.
+
 ## Self-hosting
 
 Read the [self-hosting guide](https://github.com/e2b-dev/infra/blob/main/self-host.md) to learn how to set up the [E2B infrastructure](https://github.com/e2b-dev/infra) on your own. The infrastructure is deployed using Terraform. 
