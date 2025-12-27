@@ -1,0 +1,56 @@
+ASSET NAME,RECEIVED DATE,COST BASIS(USD),DATE SOLD,PROCEEDS
+AAPL,2022-01-15,1000.00,2023-06-20,1500.00
+GOOGL,2023-02-10,2000.00,2023-07-15,2300.00
+TSLA,2021-03-20,1500.00,2023-08-10,2800.00
+MSFT,2023-04-05,1800.00,2023-09-12,2100.00
+AMZN,2020-05-15,3000.00,2023-10-20,3500.00
+
+Date,Original Date,Account Type,Account Name,Account Number,Institution Name
+2023-01-01,2023-01-01,Checking,Main Checking,****1234,Bank of America
+2023-01-02,2023-01-02,Savings,Emergency Fund,****5678,Chase Bank
+2023-01-03,2023-01-03,Credit Card,Rewards Card,****9012,Capital One
+2023-01-04,2023-01-04,Investment,Brokerage,****3456,Fidelity
+2023-01-05,2023-01-05,Checking,Secondary,****7890,Wells Fargo
+
+Transaction,Type,Input Currency,Input Amount,Output Currency
+TX001,Buy,USD,1000,BTC
+TX002,Sell,BTC,0.5,USD
+TX003,Buy,USD,500,ETH
+TX004,Transfer,BTC,0.25,USDT
+TX005,Sell,ETH,1.5,USD
+
+Start,End,Open,High,Low,Close,Volume,Market Cap
+2023-01-01,2023-01-01,30000,31000,29500,30500,1000000,500000000
+2023-01-02,2023-01-02,30500,31500,30000,31000,1100000,510000000
+2023-01-03,2023-01-03,31000,32000,30500,31500,1200000,520000000
+2023-01-04,2023-01-04,31500,32500,31000,32000,1300000,530000000
+2023-01-05,2023-01-05,32000,33000,31500,32500,1400000,540000000
+
+{"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#", "contentVersion": "1.0.0.0", "parameters": {"connections": {"defaultValue": {}, "type": "Object"}}, "triggers": {"manual": {"type": "Request", "kind": "Http", "inputs": {"schema": {"type": "object", "properties": {"name": {"type": "string"}}}}}}, "actions": {"Response": {"type": "Response", "kind": "Http", "inputs": {"statusCode": 200, "body": "Hello from Logic App"}}}}
+
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: deep-blue; icon-glyph: chart-line;
+
+let widget = new ListWidget()
+widget.backgroundColor = new Color("#1c1c1e")
+
+// Add title
+let title = widget.addText("Stock Prices")
+title.textColor = Color.white()
+title.font = Font.boldSystemFont(16)
+
+// Add stock data
+let aapl = widget.addText("AAPL: $150.25 ↑")
+aapl.textColor = Color.green()
+aapl.font = Font.systemFont(14)
+
+let tsla = widget.addText("TSLA: $245.30 ↓")
+tsla.textColor = Color.red()
+tsla.font = Font.systemFont(14)
+
+// Display widget
+if (config.runsInWidget) {
+    Script.setWidget(widget)
+}
+Script.complete()

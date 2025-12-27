@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  agentx5-parser:
+    build: .
+    image: agentx5-parser:latest
+    volumes:
+      - ./data:/data
+      - ./output:/output
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python multi_dump_parser.py /data/example_dump.txt /output
+
+# Usage:
+# 1. Place your dump files in ./data directory
+# 2. Run: docker-compose up
+# 3. Check results in ./output directory

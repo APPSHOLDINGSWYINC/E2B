@@ -1,0 +1,3 @@
+Transaction,Type,Input Currency,Input Amount,Output Currency
+TX001,Buy,USD,1000,BTC
+TX002,Sell,BTC,0.5,USD

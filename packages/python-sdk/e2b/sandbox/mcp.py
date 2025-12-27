@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, TypedDict
+from typing import Any, TypedDict
 
 from typing_extensions import NotRequired
 
@@ -247,7 +247,7 @@ class Descope(TypedDict):
 
 
 class DesktopCommander(TypedDict):
-    paths: List[str]
+    paths: list[str]
     """
     List of directories that Desktop Commander can access
     """
@@ -321,7 +321,7 @@ class Fibery(TypedDict):
 
 
 class Filesystem(TypedDict):
-    paths: List[str]
+    paths: list[str]
 
 
 class Firecrawl(TypedDict):
@@ -353,7 +353,7 @@ class Flexprice(TypedDict):
 
 
 class Git(TypedDict):
-    paths: List[str]
+    paths: list[str]
 
 
 class Github(TypedDict):
@@ -550,11 +550,11 @@ class MapboxDevkit(TypedDict):
 
 
 class Markdownify(TypedDict):
-    paths: List[str]
+    paths: list[str]
 
 
 class Markitdown(TypedDict):
-    paths: List[str]
+    paths: list[str]
 
 
 class MercadoLibre(TypedDict):
@@ -839,7 +839,7 @@ class RustMcpFilesystem(TypedDict):
     """
     Enable read/write mode. If false, the app operates in read-only mode.
     """
-    allowedDirectories: List[str]
+    allowedDirectories: list[str]
     """
     List of directories that rust-mcp-filesystem can access.
     """
@@ -1059,6 +1059,10 @@ class ZerodhaKite(TypedDict):
 
 
 class McpServer(TypedDict):
+    agentx5: NotRequired[dict[str, Any]]
+    """
+    A powerful data parsing tool that automatically splits multi-format dump files into logical datasets. Supports parsing of Robinhood sales data, personal finance exports, crypto movements, Bitcoin daily prices, Logic-App JSON, and Scriptable scripts. Each dataset is automatically persisted into clean CSV or JSON files. Features include: automatic section detection, streaming parser for large files, capital gains computation for Robinhood data, and easy extension for custom formats. Perfect for organizing mixed-format data dumps into analytics-ready datasets.
+    """
     airtable: NotRequired[Airtable]
     """
     Provides AI assistants with direct access to Airtable bases, allowing them to read schemas, query records, and interact with your Airtable data. Supports listing bases, retrieving table structures, and searching through records to help automate workflows and answer questions about your organized data.
@@ -1087,7 +1091,7 @@ class McpServer(TypedDict):
     """
     An MCP server for Astra DB workloads.
     """
-    astroDocs: NotRequired[Dict[str, Any]]
+    astroDocs: NotRequired[dict[str, Any]]
     """
     Access the latest Astro web framework documentation, guides, and API references.
     """
@@ -1107,19 +1111,19 @@ class McpServer(TypedDict):
     """
     Audiense Insights MCP Server is a server based on the Model Context Protocol (MCP) that allows Claude and other MCP-compatible clients to interact with your Audiense Insights account.
     """
-    awsCdk: NotRequired[Dict[str, Any]]
+    awsCdk: NotRequired[dict[str, Any]]
     """
     AWS Cloud Development Kit (CDK) best practices, infrastructure as code patterns, and security compliance with CDK Nag.
     """
-    awsCore: NotRequired[Dict[str, Any]]
+    awsCore: NotRequired[dict[str, Any]]
     """
     Starting point for using the awslabs MCP servers.
     """
-    awsDiagram: NotRequired[Dict[str, Any]]
+    awsDiagram: NotRequired[dict[str, Any]]
     """
     Seamlessly create diagrams using the Python diagrams package DSL. This server allows you to generate AWS diagrams, sequence diagrams, flow diagrams, and class diagrams using Python code.
     """
-    awsDocumentation: NotRequired[Dict[str, Any]]
+    awsDocumentation: NotRequired[dict[str, Any]]
     """
     Tools to access AWS documentation, search for content, and get recommendations.
     """
@@ -1127,11 +1131,11 @@ class McpServer(TypedDict):
     """
     An MCP server implementation for retrieving information from the AWS Knowledge Base using the Bedrock Agent Runtime.
     """
-    awsTerraform: NotRequired[Dict[str, Any]]
+    awsTerraform: NotRequired[dict[str, Any]]
     """
     Terraform on AWS best practices, infrastructure as code patterns, and security compliance with Checkov.
     """
-    azure: NotRequired[Dict[str, Any]]
+    azure: NotRequired[dict[str, Any]]
     """
     The Azure MCP Server, bringing the power of Azure to your agents.
     """
@@ -1191,7 +1195,7 @@ class McpServer(TypedDict):
     """
     MCP server to deploy apps to Cloud Run.
     """
-    cloudflareDocs: NotRequired[Dict[str, Any]]
+    cloudflareDocs: NotRequired[dict[str, Any]]
     """
     Access the latest documentation on Cloudflare products such as Workers, Pages, R2, D1, KV.
     """
@@ -1199,11 +1203,11 @@ class McpServer(TypedDict):
     """
     Enable AI agents to manage, monitor, and query CockroachDB using natural language. Perform complex database operations, cluster management, and query execution seamlessly through AI-driven workflows. Integrate effortlessly with MCP clients for scalable and high-performance data operations.
     """
-    codeInterpreter: NotRequired[Dict[str, Any]]
+    codeInterpreter: NotRequired[dict[str, Any]]
     """
     A Python-based execution tool that mimics a Jupyter notebook environment. It accepts code snippets, executes them, and maintains state across sessions — preserving variables, imports, and past results. Ideal for iterative development, debugging, or code execution.
     """
-    context7: NotRequired[Dict[str, Any]]
+    context7: NotRequired[dict[str, Any]]
     """
     Context7 MCP Server -- Up-to-date code documentation for LLMs and AI code editors.
     """
@@ -1235,11 +1239,11 @@ class McpServer(TypedDict):
     """
     Comprehensive database server supporting PostgreSQL, MySQL, and SQLite with natural language SQL query capabilities. Enables AI agents to interact with databases through both direct SQL and natural language queries.
     """
-    databutton: NotRequired[Dict[str, Any]]
+    databutton: NotRequired[dict[str, Any]]
     """
     Databutton MCP Server.
     """
-    deepwiki: NotRequired[Dict[str, Any]]
+    deepwiki: NotRequired[dict[str, Any]]
     """
     Tools for fetching and asking questions about GitHub repositories.
     """
@@ -1271,7 +1275,7 @@ class McpServer(TypedDict):
     """
     DreamFactory is a REST API generation platform with support for hundreds of data sources, including Microsoft SQL Server, MySQL, PostgreSQL, and MongoDB. The DreamFactory MCP Server makes it easy for users to securely interact with their data sources via an MCP client.
     """
-    duckduckgo: NotRequired[Dict[str, Any]]
+    duckduckgo: NotRequired[dict[str, Any]]
     """
     A Model Context Protocol (MCP) server that provides web search capabilities through DuckDuckGo, with additional features for content fetching and parsing.
     """
@@ -1287,7 +1291,7 @@ class McpServer(TypedDict):
     """
     The EduBase MCP server enables Claude and other LLMs to interact with EduBase's comprehensive e-learning platform through the Model Context Protocol (MCP).
     """
-    effect: NotRequired[Dict[str, Any]]
+    effect: NotRequired[dict[str, Any]]
     """
     Tools and resources for writing Effect code in Typescript.
     """
@@ -1311,7 +1315,7 @@ class McpServer(TypedDict):
     """
     Discover companies, contacts, and business insights—powered by dozens of trusted external data sources.
     """
-    fetch: NotRequired[Dict[str, Any]]
+    fetch: NotRequired[dict[str, Any]]
     """
     Fetches a URL from the internet and extracts its contents as markdown.
     """
@@ -1323,7 +1327,7 @@ class McpServer(TypedDict):
     """
     Local filesystem access with configurable allowed paths.
     """
-    findADomain: NotRequired[Dict[str, Any]]
+    findADomain: NotRequired[dict[str, Any]]
     """
     Tools for finding domain names.
     """
@@ -1359,7 +1363,7 @@ class McpServer(TypedDict):
     """
     MCP Server for the GitLab API, enabling project management, file operations, and more.
     """
-    gitmcp: NotRequired[Dict[str, Any]]
+    gitmcp: NotRequired[dict[str, Any]]
     """
     Tools for interacting with Git repositories.
     """
@@ -1387,7 +1391,7 @@ class McpServer(TypedDict):
     """
     Official Model Context Protocol server for Gyazo.
     """
-    hackernews: NotRequired[Dict[str, Any]]
+    hackernews: NotRequired[dict[str, Any]]
     """
     A Model Context Protocol (MCP) server that provides access to Hacker News stories, comments, and user data, with support for search and content retrieval.
     """
@@ -1419,7 +1423,7 @@ class McpServer(TypedDict):
     """
     Unite marketing, sales, and customer service with AI-powered automation, lead management, and comprehensive analytics.
     """
-    huggingFace: NotRequired[Dict[str, Any]]
+    huggingFace: NotRequired[dict[str, Any]]
     """
     Tools for interacting with Hugging Face models, datasets, research papers, and more.
     """
@@ -1447,7 +1451,7 @@ class McpServer(TypedDict):
     """
     AI interface to troubleshoot and observe Kubernetes/Container workloads.
     """
-    javadocs: NotRequired[Dict[str, Any]]
+    javadocs: NotRequired[dict[str, Any]]
     """
     Access to Java, Kotlin, and Scala library documentation.
     """
@@ -1491,7 +1495,7 @@ class McpServer(TypedDict):
     """
     This MCP server allows Claude and other AI assistants to access your LinkedIn. Scrape LinkedIn profiles and companies, get your recommended jobs, and perform job searches. Set your li_at LinkedIn cookie to use this server.
     """
-    llmtxt: NotRequired[Dict[str, Any]]
+    llmtxt: NotRequired[dict[str, Any]]
     """
     Discovers and retrieves llms.txt from websites.
     """
@@ -1499,7 +1503,7 @@ class McpServer(TypedDict):
     """
     A Model Context Protocol (MCP) server exposing Bitcoin blockchain data through the Maestro API platform. Provides tools to explore blocks, transactions, addresses, inscriptions, runes, and other metaprotocol data.
     """
-    manifold: NotRequired[Dict[str, Any]]
+    manifold: NotRequired[dict[str, Any]]
     """
     Tools for accessing the Manifold Markets online prediction market platform.
     """
@@ -1519,11 +1523,11 @@ class McpServer(TypedDict):
     """
     A lightweight MCP server for calling MarkItDown.
     """
-    mavenTools: NotRequired[Dict[str, Any]]
+    mavenTools: NotRequired[dict[str, Any]]
     """
     JVM dependency intelligence for any build tool using Maven Central Repository. Includes Context7 integration for upgrade documentation and guidance.
     """
-    memory: NotRequired[Dict[str, Any]]
+    memory: NotRequired[dict[str, Any]]
     """
     Knowledge graph-based persistent memory system.
     """
@@ -1539,7 +1543,7 @@ class McpServer(TypedDict):
     """
     A comprehensive MCP server for Metabase with 70+ tools.
     """
-    minecraftWiki: NotRequired[Dict[str, Any]]
+    minecraftWiki: NotRequired[dict[str, Any]]
     """
     A MCP Server for browsing the official Minecraft Wiki!.
     """
@@ -1579,7 +1583,7 @@ class McpServer(TypedDict):
     """
     MCP server for interacting with Neon Management API and databases.
     """
-    nodeCodeSandbox: NotRequired[Dict[str, Any]]
+    nodeCodeSandbox: NotRequired[dict[str, Any]]
     """
     A Node.js–based Model Context Protocol server that spins up disposable Docker containers to execute arbitrary JavaScript.
     """
@@ -1587,11 +1591,11 @@ class McpServer(TypedDict):
     """
     Official Notion MCP Server.
     """
-    novita: NotRequired[Dict[str, Any]]
+    novita: NotRequired[dict[str, Any]]
     """
     Seamless interaction with Novita AI platform resources.
     """
-    npmSentinel: NotRequired[Dict[str, Any]]
+    npmSentinel: NotRequired[dict[str, Any]]
     """
     MCP server that enables intelligent NPM package analysis powered by AI.
     """
@@ -1619,11 +1623,11 @@ class McpServer(TypedDict):
     """
     OpenAPI Schema Model Context Protocol Server.
     """
-    openbnbAirbnb: NotRequired[Dict[str, Any]]
+    openbnbAirbnb: NotRequired[dict[str, Any]]
     """
     MCP Server for searching Airbnb and get listing details.
     """
-    openmesh: NotRequired[Dict[str, Any]]
+    openmesh: NotRequired[dict[str, Any]]
     """
     Discover and connect to a curated marketplace of MCP servers for extending AI agent capabilities.
     """
@@ -1631,19 +1635,19 @@ class McpServer(TypedDict):
     """
     A simple MCP service that provides current weather and 5-day forecast using the free OpenWeatherMap API.
     """
-    openzeppelinCairo: NotRequired[Dict[str, Any]]
+    openzeppelinCairo: NotRequired[dict[str, Any]]
     """
     Access to OpenZeppelin Cairo Contracts.
     """
-    openzeppelinSolidity: NotRequired[Dict[str, Any]]
+    openzeppelinSolidity: NotRequired[dict[str, Any]]
     """
     Access to OpenZeppelin Solidity Contracts.
     """
-    openzeppelinStellar: NotRequired[Dict[str, Any]]
+    openzeppelinStellar: NotRequired[dict[str, Any]]
     """
     Access to OpenZeppelin Stellar Contracts.
     """
-    openzeppelinStylus: NotRequired[Dict[str, Any]]
+    openzeppelinStylus: NotRequired[dict[str, Any]]
     """
     Access to OpenZeppelin Stylus Contracts.
     """
@@ -1659,7 +1663,7 @@ class McpServer(TypedDict):
     """
     Connect to Oracle databases via MCP, providing secure read-only access with support for schema exploration, query execution, and metadata inspection.
     """
-    ospMarketingTools: NotRequired[Dict[str, Any]]
+    ospMarketingTools: NotRequired[dict[str, Any]]
     """
     A Model Context Protocol (MCP) server that empowers LLMs to use some of Open Srategy Partners' core writing and product marketing techniques.
     """
@@ -1667,7 +1671,7 @@ class McpServer(TypedDict):
     """
     A Model Context Protocol (MCP) server that enables AI assistants like Claude to seamlessly access web data through Oxylabs' powerful web scraping technology.
     """
-    paperSearch: NotRequired[Dict[str, Any]]
+    paperSearch: NotRequired[dict[str, Any]]
     """
     A MCP for searching and downloading academic papers from multiple sources like arXiv, PubMed, bioRxiv, etc.
     """
@@ -1707,7 +1711,7 @@ class McpServer(TypedDict):
     """
     Postman's MCP server connects AI agents, assistants, and chatbots directly to your APIs on Postman. Use natural language to prompt AI to automate work across your Postman collections, environments, workspaces, and more.
     """
-    prefEditor: NotRequired[Dict[str, Any]]
+    prefEditor: NotRequired[dict[str, Any]]
     """
     Pref Editor is a tool for viewing and editing Android app preferences during development.
     """
@@ -1715,11 +1719,11 @@ class McpServer(TypedDict):
     """
     A Model Context Protocol (MCP) server that enables AI assistants to query and analyze Prometheus metrics through standardized interfaces. Connect to your Prometheus instance to retrieve metrics, perform queries, and gain insights into your system's performance and health.
     """
-    puppeteer: NotRequired[Dict[str, Any]]
+    puppeteer: NotRequired[dict[str, Any]]
     """
     Browser automation and web scraping using Puppeteer.
     """
-    pythonRefactoring: NotRequired[Dict[str, Any]]
+    pythonRefactoring: NotRequired[dict[str, Any]]
     """
     Educational Python refactoring assistant that provides guided suggestions for AI assistants.  Features: • Step-by-step refactoring instructions without modifying code • Comprehensive code analysis using professional tools (Rope, Radon, Vulture, Jedi, LibCST, Pyrefly) • Educational approach teaching refactoring patterns through guided practice • Support for both guide-only and apply-changes modes • Identifies long functions, high complexity, dead code, and type issues • Provides precise line numbers and specific refactoring instructions • Compatible with all AI assistants (Claude, GPT, Cursor, Continue, etc.)  Perfect for developers learning refactoring patterns while maintaining full control over code changes. Acts as a refactoring mentor rather than an automated code modifier.
     """
@@ -1727,7 +1731,7 @@ class McpServer(TypedDict):
     """
     The QuantConnect MCP Server is a bridge for AIs (such as Claude and OpenAI o3 Pro) to interact with our cloud platform. When equipped with our MCP, the AI can perform tasks on your behalf through our API such as updating projects, writing strategies, backtesting, and deploying strategies to production live-trading.
     """
-    ramparts: NotRequired[Dict[str, Any]]
+    ramparts: NotRequired[dict[str, Any]]
     """
     A comprehensive security scanner for MCP servers with YARA rules and static analysis capabilities.
     """
@@ -1751,7 +1755,7 @@ class McpServer(TypedDict):
     """
     Ref powerful search tool connets your coding tools with documentation context. It includes an up-to-date index of public documentation and it can ingest your private documentation (eg. GitHub repos, PDFs) as well.
     """
-    remote: NotRequired[Dict[str, Any]]
+    remote: NotRequired[dict[str, Any]]
     """
     Tools for finding remote MCP servers.
     """
@@ -1771,7 +1775,7 @@ class McpServer(TypedDict):
     """
     MCP server that provides container image vulnerability scanning and remediation capabilities through Root.io.
     """
-    ros2: NotRequired[Dict[str, Any]]
+    ros2: NotRequired[dict[str, Any]]
     """
     Python server implementing Model Context Protocol (MCP) for ROS2.
     """
@@ -1787,7 +1791,7 @@ class McpServer(TypedDict):
     """
     The SchemaCrawler AI MCP Server enables natural language interaction with your database schema using an MCP client in "Agent" mode. It allows users to explore tables, columns, foreign keys, triggers, stored procedures and more simply by asking questions like "Explain the code for the interest calculation stored procedure". You can also ask it to help with SQL, since it knows your schema. This is ideal for developers, DBAs, and data analysts who want to streamline schema comprehension and query development without diving into dense documentation.
     """
-    schoginiMcpImageBorder: NotRequired[Dict[str, Any]]
+    schoginiMcpImageBorder: NotRequired[dict[str, Any]]
     """
     This adds a border to an image and returns base64 encoded image.
     """
@@ -1799,11 +1803,11 @@ class McpServer(TypedDict):
     """
     A Model Context Protocol server for Scrapezy that enables AI models to extract structured data from websites.
     """
-    securenoteLink: NotRequired[Dict[str, Any]]
+    securenoteLink: NotRequired[dict[str, Any]]
     """
     SecureNote.link MCP Server - allowing AI agents to securely share sensitive information through end-to-end encrypted notes.
     """
-    semgrep: NotRequired[Dict[str, Any]]
+    semgrep: NotRequired[dict[str, Any]]
     """
     MCP server for using Semgrep to scan code for security vulnerabilities.
     """
@@ -1815,7 +1819,7 @@ class McpServer(TypedDict):
     """
     Stop stitching context for Copilot and Cursor. With Sequa MCP, your AI tools know your entire codebase and docs out of the box.
     """
-    sequentialthinking: NotRequired[Dict[str, Any]]
+    sequentialthinking: NotRequired[dict[str, Any]]
     """
     Dynamic and reflective problem-solving through thought sequences.
     """
@@ -1823,7 +1827,7 @@ class McpServer(TypedDict):
     """
     Access to Short.io's link shortener and analytics tools.
     """
-    simplechecklist: NotRequired[Dict[str, Any]]
+    simplechecklist: NotRequired[dict[str, Any]]
     """
     Advanced SimpleCheckList with MCP server and SQLite database for comprehensive task management.  Features: • Complete project and task management system • Hierarchical organization (Projects → Groups → Task Lists → Tasks → Subtasks) • SQLite database for data persistence • RESTful API with comprehensive endpoints • MCP protocol compliance for AI assistant integration • Docker-optimized deployment with stability improvements  **v1.0.1 Update**: Enhanced Docker stability with improved container lifecycle management. Default mode optimized for containerized deployment with reliable startup and shutdown processes.  Perfect for AI assistants managing complex project workflows and task hierarchies.
     """
@@ -1843,7 +1847,7 @@ class McpServer(TypedDict):
     """
     Interact with SonarQube Cloud, Server and Community build over the web API. Analyze code to identify quality and security issues.
     """
-    sqlite: NotRequired[Dict[str, Any]]
+    sqlite: NotRequired[dict[str, Any]]
     """
     Database interaction and business intelligence capabilities.
     """
@@ -1867,7 +1871,7 @@ class McpServer(TypedDict):
     """
     MCP Server to interact with a SuzieQ network observability instance via its REST API.
     """
-    taskOrchestrator: NotRequired[Dict[str, Any]]
+    taskOrchestrator: NotRequired[dict[str, Any]]
     """
     Model Context Protocol (MCP) server for comprehensive task and feature management, providing AI assistants with a structured, context-efficient way to interact with project data.
     """
@@ -1887,7 +1891,7 @@ class McpServer(TypedDict):
     """
     MCP server for Tembo Cloud's platform API.
     """
-    terraform: NotRequired[Dict[str, Any]]
+    terraform: NotRequired[dict[str, Any]]
     """
     The Terraform MCP Server provides seamless integration with Terraform ecosystem, enabling advanced automation and interaction capabilities for Infrastructure as Code (IaC) development.
     """
@@ -1899,7 +1903,7 @@ class McpServer(TypedDict):
     """
     Tigris is a globally distributed S3-compatible object storage service that provides low latency anywhere in the world, enabling developers to store and access any amount of data for a wide range of use cases.
     """
-    time: NotRequired[Dict[str, Any]]
+    time: NotRequired[dict[str, Any]]
     """
     Time and timezone conversion capabilities.
     """
@@ -1915,11 +1919,11 @@ class McpServer(TypedDict):
     """
     VeyraX MCP is the only connection you need to access all your tools in any MCP-compatible environment.
     """
-    vizro: NotRequired[Dict[str, Any]]
+    vizro: NotRequired[dict[str, Any]]
     """
     provides tools and templates to create a functioning Vizro chart or dashboard step by step.
     """
-    vulnNist: NotRequired[Dict[str, Any]]
+    vulnNist: NotRequired[dict[str, Any]]
     """
     This MCP server exposes tools to query the NVD/CVE REST API and return formatted text results suitable for LLM consumption via the MCP protocol. It includes automatic query chunking for large date ranges and parallel processing for improved performance.
     """
@@ -1931,7 +1935,7 @@ class McpServer(TypedDict):
     """
     Model Context Protocol (MCP) server for the Webflow Data API.
     """
-    wikipedia: NotRequired[Dict[str, Any]]
+    wikipedia: NotRequired[dict[str, Any]]
     """
     A Model Context Protocol (MCP) server that retrieves information from Wikipedia to provide context to LLMs.
     """
@@ -1939,7 +1943,7 @@ class McpServer(TypedDict):
     """
     Connect your chat repl to wolfram alpha computational intelligence.
     """
-    youtubeTranscript: NotRequired[Dict[str, Any]]
+    youtubeTranscript: NotRequired[dict[str, Any]]
     """
     Retrieves transcripts for given YouTube video URLs.
     """
