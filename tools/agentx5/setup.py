@@ -18,7 +18,7 @@ setup(
     author_email="support@e2b.dev",
     url="https://github.com/e2b-dev/E2B",
     py_modules=["multi_dump_parser"],
-    python_requires=">=3.10",
+    python_requires=">=3.9",
     install_requires=[
         "pandas>=2.0.0",
     ],
@@ -38,6 +38,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Office/Business :: Financial",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",

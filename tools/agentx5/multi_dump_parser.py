@@ -54,6 +54,10 @@ def parse_file(in_path: Path) -> Dict[str, List[str]]:
     with in_path.open("r", encoding="utf-8", errors="ignore") as fh:
         for line in fh:
             stripped = line.rstrip("\n")
+            
+            # Skip completely empty lines
+            if not stripped.strip():
+                continue
 
             # Detect Logic-App JSON (starts with '{ "$schema":')
             if stripped.startswith('{"$schema"'):

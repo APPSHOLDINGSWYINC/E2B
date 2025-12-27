@@ -16,6 +16,7 @@ A powerful data parsing tool that automatically splits multi-format dump files i
   - CSV sections are automatically cleaned and formatted
   - JSON sections are pretty-printed for readability
   - Each dataset gets its own file
+  - Note: Scriptable JavaScript is stored as JSON for compatibility with MCP servers, even though it contains JavaScript code
 
 - **Post-Processing**:
   - Automatic capital gains computation for Robinhood data
@@ -25,7 +26,7 @@ A powerful data parsing tool that automatically splits multi-format dump files i
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.9+
 - pandas
 
 ## Installation
