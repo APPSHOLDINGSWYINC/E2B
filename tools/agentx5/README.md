@@ -16,6 +16,7 @@ A powerful data parsing tool that automatically splits multi-format dump files i
   - CSV sections are automatically cleaned and formatted
   - JSON sections are pretty-printed for readability
   - Each dataset gets its own file
+  - Note: Scriptable JavaScript is stored as JSON for compatibility with MCP servers, even though it contains JavaScript code
 
 - **Post-Processing**:
   - Automatic capital gains computation for Robinhood data
@@ -25,13 +26,27 @@ A powerful data parsing tool that automatically splits multi-format dump files i
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.9+
 - pandas
 
 ## Installation
 
+### Quick Install
+
 ```bash
-pip install pandas
+pip install -r requirements.txt
+```
+
+### Development Install
+
+For development with testing support:
+
+```bash
+# Install with dev dependencies
+pip install -e .
+
+# Or install from requirements
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -92,6 +107,52 @@ JSON_SECTIONS = {"logic_app_json", "scriptable_js", "my_custom_format"}
 ## Integration with E2B
 
 This tool is integrated with the E2B platform as an MCP server. You can use it with Claude Desktop and other AI assistants through the Model Context Protocol.
+
+## Testing
+
+The tool includes comprehensive unit tests and integration tests.
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest test_multi_dump_parser.py -v
+
+# Run specific test class
+pytest test_multi_dump_parser.py::TestParseFile -v
+
+# Run with coverage
+pytest test_multi_dump_parser.py --cov=multi_dump_parser --cov-report=html
+```
+
+### Test Coverage
+
+The test suite covers:
+- **Parsing Tests**: All supported data formats (Robinhood, personal finance, crypto, Bitcoin prices, JSON, JavaScript)
+- **Writing Tests**: CSV and JSON output generation, directory creation
+- **Capital Gains Tests**: Calculation accuracy, long-term/short-term classification, error handling
+- **End-to-End Tests**: Full pipeline with mixed data formats
+- **Pattern Recognition Tests**: Header pattern matching and case-insensitivity
+
+## Continuous Integration
+
+The tool is tested on multiple platforms and Python versions via GitHub Actions:
+- **Platforms**: Ubuntu, macOS, Windows
+- **Python Versions**: 3.10, 3.11, 3.12
+
+See `.github/workflows/agentx5_tests.yml` for CI configuration.
+
+## Command-Line Interface
+
+After installation with `pip install -e .`, you can use the tool via the CLI command:
+
+```bash
+# Using the installed command
+agentx5-parser my_data_dump.txt parsed_output
+
+# Or using python module
+python -m multi_dump_parser my_data_dump.txt parsed_output
+```
 
 ## License
 

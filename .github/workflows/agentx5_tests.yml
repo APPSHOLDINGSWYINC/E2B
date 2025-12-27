@@ -1,0 +1,70 @@
+name: Test AgentX5 Tool
+
+on:
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+    paths:
+      - 'tools/agentx5/**'
+      - '.github/workflows/agentx5_tests.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tools/agentx5/**'
+      - '.github/workflows/agentx5_tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: AgentX5 - Build and test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./tools/agentx5
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          python -m pytest test_multi_dump_parser.py -v --tb=short
+
+      - name: Test CLI with example data
+        run: |
+          python multi_dump_parser.py example_dump.txt test_output
+          ls -la test_output/
+
+      - name: Verify output files
+        run: |
+          test -f test_output/robinhood_sales.csv
+          test -f test_output/personal_finance.csv
+          test -f test_output/crypto_movements.csv
+          test -f test_output/btc_daily_prices.csv
+          test -f test_output/logic_app_json.json
+          test -f test_output/scriptable_js.json
+          test -f test_output/robinhood_gains_summary.csv
+
+      - name: Test installation
+        run: |
+          pip install -e .
+          which agentx5-parser || echo "agentx5-parser not in PATH"
