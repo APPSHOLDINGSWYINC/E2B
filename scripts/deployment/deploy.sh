@@ -44,7 +44,10 @@ done
 # Load environment variables from .env file if it exists
 if [ -f ".env.$ENVIRONMENT" ]; then
     echo "Loading environment variables from .env.$ENVIRONMENT"
-    export $(cat .env.$ENVIRONMENT | grep -v '^#' | xargs)
+    # Use safe method to load environment variables
+    set -a
+    source ".env.$ENVIRONMENT"
+    set +a
 fi
 
 # Verify required environment variables
@@ -95,14 +98,25 @@ if [ "$ENVIRONMENT" == "staging" ]; then
     
 elif [ "$ENVIRONMENT" == "production" ]; then
     echo "Deploying to production environment..."
-    
-    # Safety check for production
-    read -p "Are you sure you want to deploy to PRODUCTION? (yes/no): " confirm
-    if [ "$confirm" != "yes" ]; then
-        echo -e "${YELLOW}Deployment cancelled${NC}"
-        exit 0
+
+    # Safety check for production (skip if FORCE_DEPLOY=true for CI/CD)
+    if [ "${FORCE_DEPLOY:-false}" != "true" ]; then
+        if [ -t 0 ]; then
+            # Interactive mode
+            read -p "Are you sure you want to deploy to PRODUCTION? (yes/no): " confirm
+            if [ "$confirm" != "yes" ]; then
+                echo -e "${YELLOW}Deployment cancelled${NC}"
+                exit 0
+            fi
+        else
+            # Non-interactive mode (CI/CD)
+            echo -e "${YELLOW}Warning: Non-interactive mode detected. Set FORCE_DEPLOY=true to bypass confirmation${NC}"
+            exit 1
+        fi
+    else
+        echo "FORCE_DEPLOY=true, skipping confirmation"
     fi
-    
+
     # Add your production deployment commands here
     # Examples:
     # - Deploy to production server: ssh user@prod-server "cd /app && git pull && pnpm install && pnpm run build"

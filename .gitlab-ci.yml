@@ -38,6 +38,12 @@ variables:
   # (5-minute delay between rollouts)
   INCREMENTAL_ROLLOUT_MODE: "manual"
 
+  # Rollout delay in seconds for timed incremental rollout
+  ROLLOUT_DELAY_SECONDS: "300"
+
+  # Force deployment without confirmation (for CI/CD)
+  FORCE_DEPLOY: "true"
+
   # Node.js and pnpm configuration
   PNPM_HOME: ".pnpm-store"
   NPM_CONFIG_CACHE: ".cache/.npm"
@@ -276,8 +282,8 @@ deploy:production:timed-rollout:
     - build:packages
   script:
     - echo "Deploying to production with timed incremental rollout"
-    - echo "Waiting 5 minutes between rollouts..."
-    - sleep 300  # 5 minute delay
+    - echo "Waiting ${ROLLOUT_DELAY_SECONDS} seconds between rollouts..."
+    - sleep ${ROLLOUT_DELAY_SECONDS}
     # Add your production deployment commands here
     # Example: pnpm run deploy:production --incremental
   environment:
