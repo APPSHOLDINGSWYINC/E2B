@@ -2,6 +2,8 @@
 
 This document provides comprehensive instructions for setting up continuous deployment in GitLab for the E2B project.
 
+> **IMPORTANT NOTE:** The `.gitlab-ci.yml` file and `scripts/deployment/deploy.sh` script contain placeholder deployment commands that must be customized for your specific deployment infrastructure. Before using these files in production, you must add your actual deployment commands where indicated by comments like "Add your ... deployment commands here".
+
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
@@ -10,6 +12,7 @@ This document provides comprehensive instructions for setting up continuous depl
 4. [Deployment Strategies](#deployment-strategies)
 5. [Environment Variables](#environment-variables)
 6. [Admin-Level Configuration](#admin-level-configuration)
+7. [Customizing Deployment Commands](#customizing-deployment-commands)
 
 ## Prerequisites
 
@@ -305,6 +308,139 @@ Configure pipeline behavior:
 - Use `needs` instead of `dependencies` to allow parallel jobs
 - Consider increasing runner capacity
 
+## Customizing Deployment Commands
+
+The provided `.gitlab-ci.yml` and `scripts/deployment/deploy.sh` files contain placeholder deployment commands that **must be customized** for your specific infrastructure.
+
+### Where to Add Your Deployment Commands
+
+#### In `.gitlab-ci.yml`
+
+Look for these deployment jobs and add your commands:
+
+1. **`deploy:staging`** (lines ~220-230):
+   ```yaml
+   script:
+     - echo "Deploying to staging environment"
+     # Add your staging deployment commands here
+     # Example: pnpm run deploy:staging
+   ```
+
+2. **`deploy:production:manual`** (lines ~235-250):
+   ```yaml
+   script:
+     - echo "Deploying to production environment"
+     # Add your production deployment commands here
+     # Example: pnpm run deploy:production
+   ```
+
+3. **`deploy:production:continuous`** (lines ~255-270):
+   ```yaml
+   script:
+     - echo "Automatically deploying to production environment"
+     # Add your production deployment commands here
+   ```
+
+4. **`deploy:production:timed-rollout`** (lines ~275-295):
+   ```yaml
+   script:
+     - echo "Deploying to production with timed incremental rollout"
+     - sleep ${ROLLOUT_DELAY_SECONDS}
+     # Add your production deployment commands here
+   ```
+
+#### In `scripts/deployment/deploy.sh`
+
+Look for these sections and add your commands:
+
+1. **Staging deployment** (lines ~90-97):
+   ```bash
+   if [ "$ENVIRONMENT" == "staging" ]; then
+       # Add your staging deployment commands here
+       # Examples provided in comments
+   ```
+
+2. **Production deployment** (lines ~120-126):
+   ```bash
+   elif [ "$ENVIRONMENT" == "production" ]; then
+       # Add your production deployment commands here
+       # Examples provided in comments
+   ```
+
+### Common Deployment Patterns
+
+#### Deploy to Vercel
+
+```bash
+# Install Vercel CLI if needed
+pnpm add -g vercel
+
+# Deploy to staging
+vercel deploy --yes
+
+# Deploy to production
+vercel deploy --prod --yes
+```
+
+#### Deploy to AWS S3 + CloudFront
+
+```bash
+# Build the application
+pnpm run build:web
+
+# Sync to S3
+aws s3 sync ./apps/web/out s3://your-bucket-name --delete
+
+# Invalidate CloudFront cache
+aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
+```
+
+#### Deploy to Google Cloud Platform
+
+```bash
+# Deploy to App Engine
+gcloud app deploy --project=your-project-id --quiet
+
+# Or deploy to Cloud Run
+gcloud run deploy your-service --image gcr.io/your-project-id/your-image --platform managed
+```
+
+#### Deploy via SSH
+
+```bash
+# Deploy to a remote server
+ssh user@your-server.com "cd /var/www/app && git pull && pnpm install && pnpm run build && pm2 restart app"
+```
+
+#### Deploy with Docker
+
+```bash
+# Build Docker image
+docker build -t your-registry.com/e2b:$CI_COMMIT_SHA .
+
+# Push to registry
+docker push your-registry.com/e2b:$CI_COMMIT_SHA
+
+# Deploy to Kubernetes
+kubectl set image deployment/e2b e2b=your-registry.com/e2b:$CI_COMMIT_SHA
+```
+
+### Testing Your Deployment
+
+Before deploying to production:
+
+1. Test the deployment script locally:
+   ```bash
+   ./scripts/deployment/deploy.sh staging full
+   ```
+
+2. Test in GitLab CI/CD with a staging deployment:
+   - Push to the `develop` branch
+   - Manually trigger the `deploy:staging` job
+   - Verify the deployment works as expected
+
+3. Only after successful staging deployments, enable production deployments
+
 ## Best Practices
 
 1. **Use protected branches:** Configure `main` and `develop` as protected branches
@@ -314,6 +450,7 @@ Configure pipeline behavior:
 5. **Test in staging first:** Always test changes in staging before production
 6. **Version your deployments:** Use Git tags for release versions
 7. **Keep secrets secure:** Always mark sensitive variables as masked and protected
+8. **Customize before production:** Never deploy with placeholder commands
 
 ## Additional Resources
 

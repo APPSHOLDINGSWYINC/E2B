@@ -1,6 +1,10 @@
 #!/bin/bash
 # Deployment script for E2B project
-# This script can be customized for your specific deployment needs
+# This script is a TEMPLATE that must be customized for your specific deployment needs
+#
+# IMPORTANT: This script contains placeholder deployment commands.
+# Search for comments like "Add your ... deployment commands here" and replace
+# them with your actual deployment commands for your infrastructure.
 
 set -e  # Exit on error
 set -u  # Exit on undefined variable

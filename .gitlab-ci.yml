@@ -1,5 +1,10 @@
 # GitLab CI/CD Configuration for E2B
 # This configuration provides continuous deployment for the E2B project
+#
+# IMPORTANT: The deployment jobs contain placeholder commands that must be
+# customized for your specific deployment target (e.g., Vercel, AWS, GCP, etc.).
+# Search for "Add your ... deployment commands here" comments and replace them
+# with your actual deployment commands.
 
 # Define the stages of the pipeline
 stages:
