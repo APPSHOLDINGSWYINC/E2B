@@ -27,7 +27,7 @@ class Handlebars {
     })
 
     handlebars.registerHelper('escapeDoubleQuotes', function (str) {
-      return str ? str.replace(/"/g, '\\"') : str
+      return str ? str.replace(/\\/g, '\\\\').replace(/"/g, '\\"') : str
     })
 
     this.handlebars = handlebars
