@@ -1,0 +1,22 @@
+ASSET NAME,RECEIVED DATE,COST BASIS(USD),DATE SOLD,PROCEEDS
+AAPL,2023-01-15,1000.00,2023-06-20,1500.00
+GOOGL,2023-02-10,2000.00,2023-07-15,2300.00
+
+Date,Original Date,Account Type,Account Name,Account Number,Institution Name
+2023-01-01,2023-01-01,Checking,Main Account,1234,Bank of America
+2023-01-02,2023-01-02,Savings,Savings Account,5678,Chase
+
+Transaction,Type,Input Currency,Input Amount,Output Currency
+TX001,Buy,USD,1000,BTC
+TX002,Sell,BTC,0.5,USD
+
+Start,End,Open,High,Low,Close,Volume,Market Cap
+2023-01-01,2023-01-01,30000,31000,29500,30500,1000000,500000000
+2023-01-02,2023-01-02,30500,31500,30000,31000,1100000,510000000
+
+{"$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#", "contentVersion": "1.0.0.0"}
+
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+let widget = new ListWidget()
+widget.addText("Hello World")

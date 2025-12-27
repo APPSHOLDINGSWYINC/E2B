@@ -1,6 +1,13 @@
 {
   "additionalProperties": false,
   "properties": {
+    "agentx5": {
+      "title": "AgentX5 Multi-Dump Parser",
+      "description": "A powerful data parsing tool that automatically splits multi-format dump files into logical datasets. Supports parsing of Robinhood sales data, personal finance exports, crypto movements, Bitcoin daily prices, Logic-App JSON, and Scriptable scripts. Each dataset is automatically persisted into clean CSV or JSON files. Features include: automatic section detection, streaming parser for large files, capital gains computation for Robinhood data, and easy extension for custom formats. Perfect for organizing mixed-format data dumps into analytics-ready datasets.",
+      "additionalProperties": false,
+      "type": "object",
+      "x-dockerHubUrl": "https://hub.docker.com/mcp/server/agentx5-multi-dump-parser/overview"
+    },
     "airtable": {
       "title": "Airtable MCP Server",
       "description": "Provides AI assistants with direct access to Airtable bases, allowing them to read schemas, query records, and interact with your Airtable data. Supports listing bases, retrieving table structures, and searching through records to help automate workflows and answer questions about your organized data.",
