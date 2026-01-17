@@ -71,7 +71,7 @@ e2b:build:prod:
       await fs.promises.appendFile(makefilePath, '\n' + makefileContent, 'utf8')
     } else {
       // Create a basic Makefile if it doesn't exist
-      const makefilePath = validateAndNormalizePath(root, path.join(templateDirName, makefileName))
+      const makefilePath = validateAndNormalizePath(root, `${templateDirName}/${makefileName}`)
       await fs.promises.writeFile(makefilePath, makefileContent, 'utf8')
     }
 
