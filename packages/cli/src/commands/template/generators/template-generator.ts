@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { asLocalRelative, asPrimary } from '../../../utils/format'
+import { validateAndNormalizePath } from '../../../utils/filesystem'
 import { GeneratedFiles, Language, languageDisplay } from './types'
 import { generatePythonCode, generateTypeScriptCode } from './handlebars'
 import { writeFileContent } from './file-utils'
@@ -36,9 +37,9 @@ export async function generateAndWriteTemplateFiles(
       const buildDevFile = 'build.dev.ts'
       const buildProdFile = 'build.prod.ts'
 
-      await writeFileContent(path.join(root, templateFile), templateContent)
-      await writeFileContent(path.join(root, buildDevFile), buildDevContent)
-      await writeFileContent(path.join(root, buildProdFile), buildProdContent)
+      await writeFileContent(validateAndNormalizePath(root, templateFile), templateContent)
+      await writeFileContent(validateAndNormalizePath(root, buildDevFile), buildDevContent)
+      await writeFileContent(validateAndNormalizePath(root, buildProdFile), buildProdContent)
 
       console.log(
         `\n✅ Generated ${asPrimary(
@@ -74,9 +75,9 @@ export async function generateAndWriteTemplateFiles(
       const buildDevFile = 'build_dev.py'
       const buildProdFile = 'build_prod.py'
 
-      await writeFileContent(path.join(root, templateFile), templateContent)
-      await writeFileContent(path.join(root, buildDevFile), buildDevContent)
-      await writeFileContent(path.join(root, buildProdFile), buildProdContent)
+      await writeFileContent(validateAndNormalizePath(root, templateFile), templateContent)
+      await writeFileContent(validateAndNormalizePath(root, buildDevFile), buildDevContent)
+      await writeFileContent(validateAndNormalizePath(root, buildProdFile), buildProdContent)
 
       console.log(
         `\n✅ Generated ${asPrimary(languageDisplay[language])} template files:`
