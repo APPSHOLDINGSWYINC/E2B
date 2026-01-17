@@ -1,0 +1,48 @@
+services:
+  # Web Service (Next.js)
+  - type: web
+    name: e2b-web
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: pnpm install && pnpm build:web
+    startCommand: pnpm start:web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
+      - key: E2B_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: MUX_TOKEN_ID
+        sync: false
+      - key: MUX_TOKEN_SECRET
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+    healthCheckPath: /api/health
+    
+  # Python API Service (Optional - for additional agent orchestration)
+  - type: web
+    name: e2b-python-api
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: E2B_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+    healthCheckPath: /api/health
