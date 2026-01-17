@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages } = await request.json();
+    const { messages } = await request.json()
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
         { error: 'Invalid messages format' },
         { status: 400 }
-      );
+      )
     }
 
     // Mock response for now - replace with actual Claude API integration when API keys are available
@@ -21,23 +21,23 @@ I have access to 219 specialized agents for:
 - Legal document processing
 - Financial data analysis
 - Multi-format data parsing
-- And much more!`;
+- And much more!`
 
     return NextResponse.json({
       message: mockResponse,
       usage: { input_tokens: 0, output_tokens: 0 },
-    });
+    })
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error)
     return NextResponse.json(
       {
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
-export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const runtime = 'nodejs'
+export const maxDuration = 60

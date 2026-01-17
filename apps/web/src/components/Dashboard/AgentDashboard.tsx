@@ -1,52 +1,52 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Activity, Cpu, Zap, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react'
+import { Activity, Cpu, Zap, AlertCircle } from 'lucide-react'
 
 interface Agent {
-  id: number;
-  name: string;
-  category: string;
-  status: 'active' | 'idle' | 'error';
-  tasksCompleted: number;
-  uptime: string;
+  id: number
+  name: string
+  category: string
+  status: 'active' | 'idle' | 'error'
+  tasksCompleted: number
+  uptime: string
 }
 
 export function AgentDashboard() {
-  const [agents, setAgents] = useState<Agent[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([])
   const [stats, setStats] = useState({
     total: 219,
     active: 0,
     idle: 0,
     error: 0,
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  })
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Fetch agents from API
-    fetchAgents();
-    const interval = setInterval(fetchAgents, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchAgents()
+    const interval = setInterval(fetchAgents, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   const fetchAgents = async () => {
     try {
-      const response = await fetch('/api/agents');
-      const data = await response.json();
-      setAgents(data.agents || []);
+      const response = await fetch('/api/agents')
+      const data = await response.json()
+      setAgents(data.agents || [])
       
       // Calculate stats
-      const active = data.agents?.filter((a: Agent) => a.status === 'active').length || 0;
-      const idle = data.agents?.filter((a: Agent) => a.status === 'idle').length || 0;
-      const error = data.agents?.filter((a: Agent) => a.status === 'error').length || 0;
+      const active = data.agents?.filter((a: Agent) => a.status === 'active').length || 0
+      const idle = data.agents?.filter((a: Agent) => a.status === 'idle').length || 0
+      const error = data.agents?.filter((a: Agent) => a.status === 'error').length || 0
       
-      setStats({ total: 219, active, idle, error });
-      setIsLoading(false);
+      setStats({ total: 219, active, idle, error })
+      setIsLoading(false)
     } catch (error) {
-      console.error('Failed to fetch agents:', error);
-      setIsLoading(false);
+      console.error('Failed to fetch agents:', error)
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
@@ -102,7 +102,7 @@ export function AgentDashboard() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function StatCard({ icon, label, value, color }: any) {
@@ -111,7 +111,7 @@ function StatCard({ icon, label, value, color }: any) {
     green: 'from-green-600 to-emerald-600',
     yellow: 'from-yellow-600 to-orange-600',
     red: 'from-red-600 to-rose-600',
-  };
+  }
 
   return (
     <div className="bg-black/40 backdrop-blur-md rounded-xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all">
@@ -121,7 +121,7 @@ function StatCard({ icon, label, value, color }: any) {
       <div className="text-3xl font-bold text-white mb-1">{value}</div>
       <div className="text-sm text-purple-300">{label}</div>
     </div>
-  );
+  )
 }
 
 function AgentCard({ agent }: { agent: Agent }) {
@@ -129,7 +129,7 @@ function AgentCard({ agent }: { agent: Agent }) {
     active: 'bg-green-500',
     idle: 'bg-yellow-500',
     error: 'bg-red-500',
-  };
+  }
 
   return (
     <div className="bg-black/40 backdrop-blur-md rounded-xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all">
@@ -150,5 +150,5 @@ function AgentCard({ agent }: { agent: Agent }) {
         <span className="text-purple-300">Uptime: {agent.uptime}</span>
       </div>
     </div>
-  );
+  )
 }
