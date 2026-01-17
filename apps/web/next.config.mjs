@@ -47,6 +47,8 @@ const codeSnippetsDir = path.resolve('./src/code')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
+  reactStrictMode: true,
+  swcMinify: true,
   basePath: '',
   assetPrefix:
     // our production next app is proxied by our dashboard next app.
@@ -54,6 +56,24 @@ const nextConfig = {
     process.env.VERCEL_ENV === 'production' && process.env.PRODUCTION_URL
       ? process.env.PRODUCTION_URL
       : undefined,
+  
+  // Vercel-specific optimizations
+  experimental: {
+    serverComponentsExternalPackages: ['sharp'],
+  },
+  
+  // Output configuration for better performance
+  output: process.env.VERCEL ? undefined : 'standalone',
+  
+  // Image optimization
+  images: {
+    domains: ['avatars.githubusercontent.com', 'github.com'],
+    formats: ['image/avif', 'image/webp'],
+  },
+  
+  // Disable telemetry
+  telemetry: false,
+  
   headers: async () => [
     {
       source: '/:path*',
@@ -65,10 +85,30 @@ const nextConfig = {
         },
       ],
     },
+    {
+      source: '/api/:path*',
+      headers: [
+        { key: 'Access-Control-Allow-Credentials', value: 'true' },
+        { key: 'Access-Control-Allow-Origin', value: '*' },
+        { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
+        { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization' },
+      ],
+    },
   ],
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     const codeFilesHash = getFilesHash(codeSnippetsDir)
     config.cache.version = config.cache.version + delimiter + codeFilesHash
+    
+    // Handle polyfills for edge runtime
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    
     return config
   },
   async redirects() {

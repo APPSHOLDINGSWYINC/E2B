@@ -10,7 +10,13 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "rm-next-cache": "rm -rf .next/cache",
-    "check-deps": "knip"
+    "check-deps": "knip",
+    "type-check": "tsc --noEmit",
+    "vercel-build": "pnpm install --frozen-lockfile && pnpm build"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
