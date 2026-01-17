@@ -2,7 +2,8 @@
 // This helps catch missing environment variables early
 
 export function validateEnv() {
-  const requiredVars = ['E2B_API_KEY', 'NEXT_PUBLIC_API_URL']
+  // E2B_API_KEY is the primary required variable
+  const requiredVars = ['E2B_API_KEY']
   const missingVars = requiredVars.filter((varName) => !process.env[varName])
 
   if (missingVars.length > 0) {
