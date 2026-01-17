@@ -2,6 +2,7 @@ import { Command } from 'commander'
 import fs from 'fs'
 import json2md from 'json2md'
 import path from 'path'
+import { validateAndNormalizePath } from './filesystem'
 
 /**
  * Converts command objects to Markdown documentation.
@@ -74,7 +75,7 @@ export function commands2md(commands: Command[]): void {
     try {
       const [commandName, mdContent] = commandToMd(command)
       const fileName = `${commandName}.md`
-      const filePath = path.join(outputDir, fileName)
+      const filePath = validateAndNormalizePath(outputDir, fileName)
       fs.writeFileSync(filePath, mdContent)
       console.log(`Generated documentation for ${commandName} at ${filePath}`)
     } catch (error) {

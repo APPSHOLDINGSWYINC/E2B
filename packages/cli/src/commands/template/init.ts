@@ -5,7 +5,7 @@ import { Template } from 'e2b'
 import * as fs from 'fs'
 import * as path from 'path'
 import { pathOption } from 'src/options'
-import { getRoot } from 'src/utils/filesystem'
+import { getRoot, validateAndNormalizePath } from 'src/utils/filesystem'
 import { asPrimary } from 'src/utils/format'
 import {
   generateAndWriteTemplateFiles,
@@ -49,7 +49,7 @@ async function addMakefileScripts(
 ): Promise<void> {
   try {
     const makefileName = 'Makefile'
-    const makefileExists = fs.existsSync(path.join(root, makefileName))
+    const makefileExists = fs.existsSync(validateAndNormalizePath(root, makefileName))
 
     let cdPrefix = ''
     if (makefileExists) {
@@ -67,11 +67,11 @@ e2b:build:prod:
 `
 
     if (makefileExists) {
-      const makefilePath = path.join(root, makefileName)
+      const makefilePath = validateAndNormalizePath(root, makefileName)
       await fs.promises.appendFile(makefilePath, '\n' + makefileContent, 'utf8')
     } else {
       // Create a basic Makefile if it doesn't exist
-      const makefilePath = path.join(root, templateDirName, makefileName)
+      const makefilePath = validateAndNormalizePath(root, path.join(templateDirName, makefileName))
       await fs.promises.writeFile(makefilePath, makefileContent, 'utf8')
     }
 
@@ -107,7 +107,7 @@ async function addPackageJsonScripts(
       cdPrefix = `cd ${templateDirName} && `
     } catch (error) {
       // Handle the case where package.json does not exist
-      const createRoot = path.join(root, templateDirName)
+      const createRoot = validateAndNormalizePath(root, templateDirName)
       pkgJson = await PackageJson.create(createRoot)
     }
 
@@ -245,7 +245,7 @@ export const initCommand = new commander.Command('init')
 
         // Step 3: Create template directory - fail if it already exists
         const templateDirName = templateName
-        const templateDir = path.join(root, templateDirName)
+        const templateDir = validateAndNormalizePath(root, templateDirName)
 
         if (fs.existsSync(templateDir)) {
           throw new Error(
@@ -281,7 +281,7 @@ export const initCommand = new commander.Command('init')
           templateDirName,
           generatedFiles
         )
-        const readmeFilePath = path.join(templateDir, 'README.md')
+        const readmeFilePath = validateAndNormalizePath(templateDir, 'README.md')
         await fs.promises.writeFile(readmeFilePath, readmeContent, 'utf8')
 
         console.log('\n🎉 Template initialized successfully!')

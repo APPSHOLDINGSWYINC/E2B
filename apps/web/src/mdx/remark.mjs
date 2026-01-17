@@ -6,6 +6,7 @@ import { readFile } from 'fs/promises'
 import path from 'path'
 import JSON5 from 'json5'
 import fs from 'fs'
+import { validateAndNormalizePath } from '../utils/securePath.mjs'
 
 const lang2ext = {
   js: 'js',
@@ -34,7 +35,7 @@ function loadFileSnippet() {
       if (snippet && node.value === '') {
         fileLoadingPromises.push(
           (async () => {
-            const file = path.resolve(`./src/code/${snippetFileName}`)
+            const file = validateAndNormalizePath('./src/code', snippetFileName)
             const content = await readFile(file, 'utf8')
             node.value = content.trim()
           })()
@@ -64,7 +65,7 @@ function processCodeGroupAutoload() {
       for (const lang of [`js`, `python`]) {
         const snippetPath = `${lang}/${attrPath}.${lang2ext[lang]}`
         const fileExists = fs.existsSync(
-          path.resolve(`./src/code/${snippetPath}`)
+          validateAndNormalizePath('./src/code', snippetPath)
         )
         if (!fileExists) {
           console.warn(

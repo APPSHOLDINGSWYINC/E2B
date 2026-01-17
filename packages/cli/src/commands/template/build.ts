@@ -13,7 +13,7 @@ import {
 } from 'src/docker/constants'
 import { configOption, pathOption, teamOption } from 'src/options'
 import { getUserConfig } from 'src/user'
-import { getRoot } from 'src/utils/filesystem'
+import { getRoot, validateAndNormalizePath } from 'src/utils/filesystem'
 import { wait } from 'src/utils/wait'
 import * as stripAnsi from 'strip-ansi'
 import { handleE2BRequestError } from '../../utils/errors'
@@ -583,7 +583,7 @@ function loadFile(filePath: string) {
 export function getDockerfile(root: string, file?: string) {
   // Check if user specified custom Dockerfile exists
   if (file) {
-    const dockerfilePath = path.join(root, file)
+    const dockerfilePath = validateAndNormalizePath(root, file)
     const dockerfileContent = loadFile(dockerfilePath)
     const dockerfileRelativePath = path.relative(root, dockerfilePath)
 
@@ -603,7 +603,7 @@ export function getDockerfile(root: string, file?: string) {
   }
 
   // Check if default dockerfile e2b.Dockerfile exists
-  let dockerfilePath = path.join(root, defaultDockerfileName)
+  let dockerfilePath = validateAndNormalizePath(root, defaultDockerfileName)
   let dockerfileContent = loadFile(dockerfilePath)
   const defaultDockerfileRelativePath = path.relative(root, dockerfilePath)
   let dockerfileRelativePath = defaultDockerfileRelativePath
@@ -617,7 +617,7 @@ export function getDockerfile(root: string, file?: string) {
   }
 
   // Check if fallback Dockerfile exists
-  dockerfilePath = path.join(root, fallbackDockerfileName)
+  dockerfilePath = validateAndNormalizePath(root, fallbackDockerfileName)
   dockerfileContent = loadFile(dockerfilePath)
   const fallbackDockerfileRelativeName = path.relative(root, dockerfilePath)
   dockerfileRelativePath = fallbackDockerfileRelativeName

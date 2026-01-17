@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { MetadataRoute } from 'next'
+import { validateAndNormalizePath } from './securePath'
 
 function nonNull<T>(value: T | null): value is T {
   return value !== null
@@ -38,7 +39,7 @@ function getFiles(directory: string): string[] {
   const fileNames = fs.readdirSync(directory)
   const filePaths = fileNames
     .map((fileName) => {
-      const filePath = path.join(directory, fileName)
+      const filePath = validateAndNormalizePath(directory, fileName)
       const stat = fs.statSync(filePath)
       if (stat.isDirectory()) {
         return getFiles(filePath)

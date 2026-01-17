@@ -10,6 +10,7 @@ import { createLoader } from 'simple-functional-loader'
 import { filter } from 'unist-util-filter'
 import { SKIP, visit } from 'unist-util-visit'
 import * as url from 'url'
+import { validateAndNormalizePath } from '../utils/securePath.mjs'
 
 const __filename = url.fileURLToPath(import.meta.url)
 const processor = remark().use(remarkMdx).use(extractSections)
@@ -134,7 +135,7 @@ export default function (nextConfig = {}) {
               )
 
               let url = '/' + file.replace(/(^|\/)page\.mdx$/, '')
-              let mdx = fs.readFileSync(path.join(appDir, file), 'utf8')
+              let mdx = fs.readFileSync(validateAndNormalizePath(appDir, file), 'utf8')
 
               let sections = []
 

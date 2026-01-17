@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const fg = require('fast-glob')
+const { validateAndNormalizePath } = require('./src/utils/securePath')
 
 const sdkRefRoutesFilePath = './src/components/Navigation/sdkRefRoutes.json'
 
@@ -22,7 +23,7 @@ function buildDirectoryHierarchy(dirPath) {
   entries.forEach((entry) => {
     if (entry.isDirectory()) {
       result[entry.name] = buildDirectoryHierarchy(
-        path.join(dirPath, entry.name)
+        validateAndNormalizePath(dirPath, entry.name)
       )
     }
   })
@@ -122,7 +123,7 @@ function buildRoutes(dirName, dir, basePath = '', depth = 1) {
           title: depth === 1 ? entry.name.toLocaleUpperCase() : entry.name,
         }
         const entryName = entry.name
-        const childPath = path.join(dir, entry.name)
+        const childPath = validateAndNormalizePath(dir, entry.name)
         const links = buildRoutes(entryName, childPath, relativePath, depth + 1)
 
         if (links && links.length > 0) {
@@ -141,7 +142,7 @@ function buildRoutes(dirName, dir, basePath = '', depth = 1) {
                 const mainModuleSubModules = getSubModules(
                   entryName,
                   `/docs/sdk-reference/${entryName}/${version}/${module}`,
-                  path.join(
+                  validateAndNormalizePath(
                     __dirname,
                     `./src/app/(docs)/docs/sdk-reference/${entryName}/${version}/${module}`
                   )
@@ -158,7 +159,7 @@ function buildRoutes(dirName, dir, basePath = '', depth = 1) {
                           links: getSubModules(
                             entryName,
                             `/docs/sdk-reference/${entryName}/${version}/${module}/${nestedModule}`,
-                            path.join(
+                            validateAndNormalizePath(
                               __dirname,
                               `./src/app/(docs)/docs/sdk-reference/${entryName}/${version}/${module}/${nestedModule}`
                             )

@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import { asFormattedSandboxTemplate, asLocalRelative } from 'src/utils/format'
+import { validateAndNormalizePath } from 'src/utils/filesystem'
 
 export const configName = 'e2b.toml'
 
@@ -125,5 +126,6 @@ export async function deleteConfig(configPath: string) {
 export function getConfigPath(root: string, configPath?: string) {
   if (configPath && path.isAbsolute(configPath)) return configPath
 
-  return path.join(root, configPath || configName)
+  const relativePath = configPath || configName
+  return validateAndNormalizePath(root, relativePath)
 }
